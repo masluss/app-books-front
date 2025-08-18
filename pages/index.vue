@@ -1,0 +1,92 @@
+<script setup lang="ts">
+import { useSearchStore } from '@/features/search/model/useSearchStore';
+
+const store = useSearchStore();
+const q = ref('');
+
+const onSubmit = async () => {
+  await store.searchBooks(q.value);
+};
+</script>
+
+<template>
+  <section class="home">
+    <form class="search-box" @submit.prevent="onSubmit" role="search" aria-label="Buscar libros">
+      <input
+        v-model="q"
+        placeholder="Escribe el nombre de un Libro para continuar"
+        aria-label="Consulta"
+      />
+      <button type="submit">Buscar</button>
+    </form>
+
+    <p v-if="store.loading">Buscando…</p>
+    <p v-else-if="!store.loading && store.q && store.results.length === 0">
+      No encontramos libros con el título ingresado
+    </p>
+
+    <ul v-else class="results-grid">
+      <li v-for="b in store.results" :key="b.id" class="card">
+        <img v-if="b.coverUrl" :src="b.coverUrl" :alt="`Portada de ${b.title}`" />
+        <h3>{{ b.title }}</h3>
+        <p v-if="b.author">{{ b.author }}</p>
+        <NuxtLink :to="`/book/${b.id}`">Ver detalle</NuxtLink>
+      </li>
+    </ul>
+  </section>
+</template>
+
+<style scoped lang="scss">
+.home {
+  min-height: 70dvh;
+  display: grid;
+  place-items: start center;
+  gap: 1rem;
+  padding: 2rem;
+}
+.search-box {
+  display: flex;
+  gap: 0.5rem;
+  input {
+    padding: 0.75rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    min-width: 28rem;
+  }
+  button {
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+  }
+}
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+  width: 100%;
+}
+.card {
+  border: 1px solid #eee;
+  border-radius: 16px;
+  padding: 1rem;
+  img {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+    border-radius: 12px;
+  }
+  h3 {
+    margin: 0.5rem 0 0;
+    font-size: 1rem;
+  }
+  p {
+    margin: 0;
+    color: #666;
+  }
+  a {
+    display: inline-block;
+    margin-top: 0.5rem;
+  }
+}
+</style>

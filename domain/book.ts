@@ -1,5 +1,6 @@
 export interface BookSummary {
   id: string;
+  openlibraryKey: string;
   title: string;
   author?: string;
   year?: number;
@@ -10,7 +11,7 @@ export interface BookSummary {
 
 export interface LibraryBook {
   id: string;
-  workId: string;
+  openLibraryKey: string;
   title: string;
   author?: string;
   year?: number;

@@ -7,6 +7,7 @@ export function toBookSummary(doc: BookDocDto): BookSummary {
 
   return {
     id,
+    openlibraryKey: doc.key,
     title: doc.title,
     author: doc.author_name?.[0] ?? undefined,
     year: doc.first_publish_year,

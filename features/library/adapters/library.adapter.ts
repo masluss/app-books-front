@@ -6,17 +6,17 @@ export function toSaveBookRequest(
   params: { review: string; rating: number }
 ): SaveBookRequestDto {
   const workPath = `/works/${book.id}`;
+  const rating = Math.max(1, Math.min(5, Number(params.rating || 0)));
 
   return {
-    key: workPath,
-    openLibraryKeyNormalized: workPath,
+    openLibraryKey: workPath,
     title: book.title,
     author_name: book.author ? [book.author] : [],
     cover_i: book.coverId ? Number(book.coverId) : undefined,
     first_publish_year: book.year,
     coverUrl: book.coverUrl ?? (book.coverId ? `https://covers.openlibrary.org/b/id/${book.coverId}-M.jpg` : undefined),
-    inMyLibrary: book.inMyLibrary ?? false,
+    inMyLibrary: Boolean(book.inMyLibrary),
     review: params.review.trim(),
-    rating: params.rating
+    rating
   };
 }

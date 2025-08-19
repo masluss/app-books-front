@@ -19,12 +19,17 @@
       />
     </form>
 
-<p v-if="store.loading">Buscando…</p>
-<p v-else-if="store.showEmpty">No encontramos libros con el título ingresado</p>
+    <p v-if="store.loading">Buscando…</p>
+    <p v-else-if="store.showEmpty">No encontramos libros con el título ingresado</p>
 
     <ul v-else class="results-grid">
       <li v-for="b in store.results" :key="b.id" class="card">
-        <img v-if="b.coverUrl" :src="b.coverUrl" :alt="`Portada de ${b.title}`" />
+        <ImgGeneral
+          :src="b.coverUrl"
+          :alt="`Portada de ${b.title}`"
+          imgClass="card__img"
+          :imgStyle="{ objectFit: 'cover', height: '280px', width: '100%' }"
+        />
         <h3>{{ b.title }}</h3>
         <p v-if="b.author">{{ b.author }}</p>
         <NuxtLink :to="`/book/${b.id}`" @click.prevent="goDetail(b)">Ver detalle</NuxtLink>
@@ -36,6 +41,7 @@
 <script setup lang="ts">
 import { useSearchStore } from '@/features/search/model/useSearchStore';
 import ButtonGeneral from '~/components/shared/ui/ButtonGeneral.vue';
+import ImgGeneral from '~/components/shared/ui/ImgGeneral.vue';
 import InputGeneral from '~/components/shared/ui/InputGeneral.vue';
 import type { BookSummary } from '~/domain/book';
 
@@ -49,11 +55,10 @@ const onSubmit = async () => {
 };
 
 const goDetail = (book: BookSummary) => {
-  store.setSelected(book);                         
+  store.setSelected(book);
   if (process.client) {
-    sessionStorage.setItem('selectedBook', JSON.stringify(book)); 
+    sessionStorage.setItem('selectedBook', JSON.stringify(book));
   }
-  navigateTo(`/library/${book.id}`);                 
 };
 </script>
 

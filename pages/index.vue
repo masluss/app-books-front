@@ -1,40 +1,61 @@
-<script setup lang="ts">
-import { useSearchStore } from '@/features/search/model/useSearchStore';
-
-const store = useSearchStore();
-const q = ref('');
-
-const onSubmit = async () => {
-  await store.searchBooks(q.value);
-};
-</script>
-
 <template>
   <section class="home">
     <form class="search-box" @submit.prevent="onSubmit" role="search" aria-label="Buscar libros">
-      <input
+      <InputGeneral
+        id="q"
         v-model="q"
+        type="search"
         placeholder="Escribe el nombre de un Libro para continuar"
+        inputClass="input--primary"
         aria-label="Consulta"
       />
-      <button type="submit">Buscar</button>
+      <ButtonGeneral
+        id="btn-primary"
+        text="Buscar"
+        type="submit"
+        buttonClass="btn--primary"
+        textClass="btn--primary__text"
+        :disabled="!q.trim() || store.loading"
+      />
     </form>
 
-    <p v-if="store.loading">Buscando…</p>
-    <p v-else-if="!store.loading && store.q && store.results.length === 0">
-      No encontramos libros con el título ingresado
-    </p>
+<p v-if="store.loading">Buscando…</p>
+<p v-else-if="store.showEmpty">No encontramos libros con el título ingresado</p>
 
     <ul v-else class="results-grid">
       <li v-for="b in store.results" :key="b.id" class="card">
         <img v-if="b.coverUrl" :src="b.coverUrl" :alt="`Portada de ${b.title}`" />
         <h3>{{ b.title }}</h3>
         <p v-if="b.author">{{ b.author }}</p>
-        <NuxtLink :to="`/book/${b.id}`">Ver detalle</NuxtLink>
+        <NuxtLink :to="`/book/${b.id}`" @click.prevent="goDetail(b)">Ver detalle</NuxtLink>
       </li>
     </ul>
   </section>
 </template>
+
+<script setup lang="ts">
+import { useSearchStore } from '@/features/search/model/useSearchStore';
+import ButtonGeneral from '~/components/shared/ui/ButtonGeneral.vue';
+import InputGeneral from '~/components/shared/ui/InputGeneral.vue';
+import type { BookSummary } from '~/domain/book';
+
+const store = useSearchStore();
+const q = ref('');
+
+const onSubmit = async () => {
+  const term = q.value.trim();
+  if (!term) return;
+  await store.searchBooks(term);
+};
+
+const goDetail = (book: BookSummary) => {
+  store.setSelected(book);                         
+  if (process.client) {
+    sessionStorage.setItem('selectedBook', JSON.stringify(book)); 
+  }
+  navigateTo(`/library/${book.id}`);                 
+};
+</script>
 
 <style scoped lang="scss">
 .home {

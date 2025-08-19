@@ -1,12 +1,8 @@
 import type { SearchBooksResponseDto } from '../model/dto/search.dto';
 
-export function useBooksApi() {
+export const useBooksApi = () => {
   const { $api } = useNuxtApp();
-
-  const search = (q: string) =>
-    $api<SearchBooksResponseDto>('books/search', {
-      params: { q },
-    });
-
+  const search = (titleBook: string, signal?: AbortSignal) =>
+    $api<SearchBooksResponseDto>('books/search', { params: { titleBook }, signal });
   return { search };
-}
+};

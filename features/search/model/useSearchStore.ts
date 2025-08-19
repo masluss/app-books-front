@@ -5,28 +5,53 @@ import type { BookSummary } from '~/domain/book';
 
 export const useSearchStore = defineStore('search', {
   state: () => ({
-    q: '' as string,
+    query: '' as string,
     results: [] as BookSummary[],
+    selectedBook: null as BookSummary | null,
     loading: false as boolean,
-    error: '' as string,
+    errorMessage: '' as string,
+    abortController: null as AbortController | null,
+    lastQuery: '' as string,
   }),
+  getters: {
+    hasQuery: (s) => s.query.trim().length > 0,
+    hasResults: (s) => s.results.length > 0,
+    showEmpty: (s) =>
+      !s.loading && s.query.trim().length > 0 && s.results.length === 0 && !s.errorMessage,
+  },
   actions: {
-    async searchBooks(q: string) {
-      this.q = q.trim();
-      if (!this.q) {
+    setSelected(book: BookSummary | null) {
+      this.selectedBook = book;
+    },
+
+    async searchBooks(value: string) {
+      const nextValue = value.trim();
+      this.query = nextValue;
+
+      if (!nextValue) {
         this.results = [];
+        this.errorMessage = '';
         return;
       }
+      if (this.lastQuery === nextValue && this.results.length) return;
+
+      if (this.abortController) this.abortController.abort();
+      this.abortController = new AbortController();
+
       this.loading = true;
-      this.error = '';
+      this.errorMessage = '';
       try {
-        const { docs } = await useBooksApi().search(this.q);
+        const { docs } = await useBooksApi().search(nextValue, this.abortController.signal);
         this.results = docs.map(toBookSummary).slice(0, 10);
-      } catch (e) {
-        this.error = 'No pudimos buscar en este momento. Intenta de nuevo.';
-        this.results = [];
+        this.lastQuery = nextValue;
+      } catch (e: any) {
+        if (e?.name !== 'AbortError') {
+          this.errorMessage = 'No pudimos buscar en este momento. Intenta de nuevo.';
+          this.results = [];
+        }
       } finally {
         this.loading = false;
+        this.abortController = null;
       }
     },
   },

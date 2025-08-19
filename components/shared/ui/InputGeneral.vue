@@ -9,8 +9,11 @@
     :disabled="disabled"
     :required="required"
     :autocomplete="autocomplete"
-    :minlength="minlength"
-    :maxlength="maxlength"
+    :minlength?="minlength"
+    :maxlength?="maxlength"
+    :min="min"
+    :max="max"
+    :step="step"
     class="app-input"
     :class="inputClass"
     @input="onInput"
@@ -21,41 +24,60 @@
 <script setup lang="ts">
 defineOptions({ inheritAttrs: false });
 
-const props = withDefaults(defineProps<{
-  id: string;
-  modelValue: string;
-  type?: 'text' | 'search' | 'email' | 'number' | 'password' | 'url';
-  placeholder?: string;
-  disabled?: boolean;
-  required?: boolean;
-  name?: string;
-  autocomplete?: string;
-  minlength?: number;
-  maxlength?: number;
-  inputClass?: string;   
-  label?: string;        
-  labelClass?: string;   
-}>(), {
-  type: 'text',
-  disabled: false,
-  required: false
-});
+const props = withDefaults(
+  defineProps<{
+    id: string;
+    modelValue: string | number;
+    modelModifiers?: { number?: boolean; trim?: boolean };
+    type?: 'text' | 'search' | 'email' | 'number' | 'password' | 'url';
+    placeholder?: string;
+    disabled?: boolean;
+    required?: boolean;
+    name?: string;
+    autocomplete?: string;
+    minlength?: number;
+    maxlength?: number;
+    min?: number;
+    max?: number;
+    step?: number;
+    inputClass?: string;
+    label?: string;
+    labelClass?: string;
+  }>(),
+  {
+    type: 'text',
+    disabled: false,
+    required: false,
+  },
+);
 
-const emit = defineEmits<{ (e: 'update:modelValue', v: string): void }>();
+const emit = defineEmits<{ (e: 'update:modelValue', v: string | number): void }>();
 
 function onInput(e: Event) {
-  emit('update:modelValue', (e.target as HTMLInputElement).value);
+  const el = e.target as HTMLInputElement;
+  let val: string | number = el.value;
+
+  if (props.modelModifiers?.trim && typeof val === 'string') {
+    val = val.trim();
+  }
+  if (props.modelModifiers?.number) {
+    val = val === '' ? '' : Number(val);
+  }
+
+  emit('update:modelValue', val);
 }
 </script>
 
 <style scoped lang="scss">
 .app-input {
   width: 100%;
-  padding: .6rem 1rem;
+  padding: 0.6rem 1rem;
   border: 1px solid #ddd;
   border-radius: 12px;
   outline: none;
-  transition: border-color .15s ease, background .15s ease;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
 
   &:focus {
     border-color: #3a6ff8;
@@ -63,14 +85,14 @@ function onInput(e: Event) {
   }
 
   &:disabled {
-    opacity: .6;
+    opacity: 0.6;
     cursor: not-allowed;
   }
 }
 
 .app-input__label {
   display: inline-block;
-  margin-bottom: .35rem;
+  margin-bottom: 0.35rem;
   color: #333;
   font-weight: 500;
 }

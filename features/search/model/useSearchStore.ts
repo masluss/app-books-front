@@ -24,6 +24,14 @@ export const useSearchStore = defineStore('search', {
       this.selectedBook = book;
     },
 
+    selectBook(b: BookSummary) {
+      this.selectedBook = b;
+      if (process.client) {
+        sessionStorage.setItem('selectedBook', JSON.stringify(b));
+      }
+      navigateTo(`/books/${b.id}`);
+    },
+
     async searchBooks(value: string) {
       const nextValue = value.trim();
       this.query = nextValue;

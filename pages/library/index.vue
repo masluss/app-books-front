@@ -1,5 +1,6 @@
 <template>
   <section class="library-page">
+    <PopUpGeneral v-model="showToast" :message="toastMessage" :type="toastType" :duration="3000" />
     <header class="library-page__header">
       <h1>Mi biblioteca</h1>
       <div class="controls">
@@ -128,6 +129,17 @@ import InputGeneral from '@/components/shared/ui/InputGeneral.vue';
 import ImgGeneral from '@/components/shared/ui/ImgGeneral.vue';
 import type { LibraryBook } from '~/domain/book';
 import TextAreaGeneral from '~/components/shared/ui/TextAreaGeneral.vue';
+import PopUpGeneral from '~/components/shared/ui/PopUpGeneral.vue';
+
+const showToast = ref(false);
+const toastMessage = ref('');
+const toastType = ref<'success' | 'error' | 'info' | 'warning'>('info');
+
+function toast(message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info') {
+  toastMessage.value = message;
+  toastType.value = type;
+  showToast.value = true;
+}
 
 const store = useLibraryStore();
 const search = ref('');
@@ -161,6 +173,9 @@ const filteredBooks = computed(() => {
 
 onMounted(() => {
   store.fetchAll();
+  if (store.error) {
+    toast(store.error, 'error');
+  }
 });
 
 const editing = ref<LibraryBook | null>(null);
@@ -180,21 +195,51 @@ function closeEdit() {
 
 async function saveEdit() {
   if (!editing.value) return;
-  saving.value = true;
-  const ok = await store.updateBook(editing.value.id, {
-    rating: form.rating,
-    review: form.review,
-  });
-  saving.value = false;
-  if (ok) closeEdit();
+
+  const rating = form.rating;
+  const review = form.review?.trim() ?? '';
+  if (rating < 1 || rating > 5 || review.length > 500) {
+    toast(
+      'La calificación debe estar entre 1 y 5 y la reseña no debe superar 500 caracteres.',
+      'error',
+    );
+    return;
+  }
+
+  try {
+    saving.value = true;
+    const ok = await store.updateBook(editing.value.id, {
+      rating: form.rating,
+      review: form.review,
+    });
+
+    if (ok) {
+      toast('¡Cambios guardados!', 'success');
+      closeEdit();
+    } else {
+      toast(store.error || 'No se pudieron guardar los cambios.', 'error');
+    }
+  } catch {
+    toast(store.error || 'Ocurrió un error al guardar.', 'error');
+  } finally {
+    saving.value = false;
+  }
 }
 
 async function confirmDelete(book: LibraryBook) {
-  console.log('book ', book);
   const ok = window.confirm(`¿Eliminar permanentemente "${book.title}" de tu biblioteca?`);
   if (!ok) return;
-  console.log('book.di ', book.id);
-  await store.deleteBook(book.id);
+
+  try {
+    await store.deleteBook(book.id);
+    if (!store.error) {
+      toast('Libro eliminado.', 'success');
+    } else {
+      toast(store.error, 'error');
+    }
+  } catch {
+    toast('No fue posible eliminar el libro. Intenta de nuevo.', 'error');
+  }
 }
 </script>
 

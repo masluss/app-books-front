@@ -1,5 +1,11 @@
 <template>
   <section class="book-detail container">
+    <PopUpGeneral
+      v-model="showToast"
+      :message="toastMessage"
+      :type="toastType"
+      :duration="3000"
+    />
     <div v-if="!selected" class="empty">
       <p>No encontramos el libro seleccionado. Vuelve a la búsqueda.</p>
       <NuxtLink to="/">Ir al inicio</NuxtLink>
@@ -81,6 +87,11 @@ import ImgGeneral from '~/components/shared/ui/ImgGeneral.vue';
 import ButtonGeneral from '~/components/shared/ui/ButtonGeneral.vue';
 import InputGeneral from '~/components/shared/ui/InputGeneral.vue';
 import TextAreaGeneral from '~/components/shared/ui/TextAreaGeneral.vue';
+import PopUpGeneral from '~/components/shared/ui/PopUpGeneral.vue';
+
+const showToast = ref(false);
+const toastMessage = ref('');
+const toastType = ref<'success' | 'error' | 'info' | 'warning'>('info');
 
 const search = useSearchStore();
 const library = useLibraryStore();
@@ -104,11 +115,10 @@ const isValid = computed(
 );
 
 async function save() {
-  error.value = '';
-  success.value = '';
   if (!selected.value || !isValid.value) {
-    error.value =
-      'La calificación debe estar entre 1 y 5 y que el review no debe superar los 500 caracteres.';
+    toastMessage.value = 'La calificación debe estar entre 1 y 5 y el review no debe superar 500 caracteres.';
+    toastType.value = 'error';
+    showToast.value = true;
     return;
   }
 
@@ -118,11 +128,16 @@ async function save() {
       rating: rating.value,
     });
     await library.addToLibrary(bookSelectedToSave);
-    success.value = '¡Guardado con éxito en Mi biblioteca!';
+
+    toastMessage.value = '¡Guardado con éxito en Mi biblioteca!';
+    toastType.value = 'success';
+    showToast.value = true;
+
     selected.value.inMyLibrary = true;
-    await new Promise((r) => setTimeout(r, 800));
   } catch {
-    error.value = library.error || 'No pudimos guardar el libro. Inténtalo de nuevo.';
+    toastMessage.value = library.error || 'No pudimos guardar el libro. Inténtalo de nuevo.';
+    toastType.value = 'error';
+    showToast.value = true;
   }
 }
 </script>

@@ -1,6 +1,6 @@
-# Nuxt Minimal Starter
-
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+# 📚 app-books-front
+Este es el frontend de la aplicación SPA construida con Nuxt 3.
+La aplicación permite buscar información de libros, gestionarlos en una biblioteca personal y administrar reseñas y calificaciones.
 
 ## Setup
 

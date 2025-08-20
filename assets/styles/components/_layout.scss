@@ -1,0 +1,54 @@
+@use '../mixins/_index.scss' as *;
+
+.app-layout {
+  min-height: 100dvh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  background: var(--c-surface);
+  color: var(--c-text);
+}
+
+/* Header pegajoso con blur */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: .625rem 1rem;
+
+  background: color-mix(in oklab, var(--c-surface), white 20%); /* semitransparente */
+  backdrop-filter: blur(6px);
+
+  border-bottom: 1px solid var(--c-border);
+}
+
+.brand {
+  text-decoration: none;
+  color: var(--c-text);
+  font-weight: 600;
+  font-size: 1.05rem;
+
+  &:focus-visible { @include focus-ring; }
+}
+
+.spacer { margin-left: auto; }
+
+.app-main {
+  padding: 1.5rem 2rem;
+  min-height: calc(100dvh - 140px);
+}
+
+.app-footer {
+  padding: 1rem 2rem;
+  border-top: 1px solid var(--c-border);
+  color: color-mix(in oklab, var(--c-text), black 40%);
+  font-size: .9rem;
+  text-align: center;
+}
+
+.app-layout--compact {
+  .app-main { padding: 1rem; }
+}

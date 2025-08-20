@@ -1,0 +1,42 @@
+@use '../mixins/_index.scss' as *;
+
+.app-textarea {
+  width: 100%;
+  padding: .75rem 1rem;
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-3);
+  resize: vertical;
+  min-height: 140px;
+  transition: border-color .15s ease, background .15s ease;
+
+  &:focus {
+    @include focus-ring;
+    background: color-mix(in oklab, var(--c-surface), var(--c-primary) 6%);
+  }
+  &:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+  }
+
+  &.is-full { width: 100%; }
+  &.is-invalid {
+    border-color: color-mix(in oklab, var(--c-border), var(--c-error) 55%);
+    background: color-mix(in oklab, var(--c-surface), var(--c-error) 10%);
+  }
+}
+
+.app-textarea__label {
+  display: inline-block;
+  margin-bottom: .35rem;
+  color: var(--c-text);
+  font-weight: var(--fw-medium);
+}
+
+.app-textarea__counter {
+  margin-top: .25rem;
+  text-align: right;
+  font-size: .875rem;
+  color: color-mix(in oklab, var(--c-text), black 35%);
+
+  &.is-danger { color: var(--c-error); }
+}

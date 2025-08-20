@@ -60,37 +60,5 @@ function onInput(e: Event) {
 </script>
 
 <style scoped lang="scss">
-.app-textarea {
-  width: 100%;
-  padding: .75rem 1rem;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  resize: vertical;
-  min-height: 140px;
-  outline: none;
-  transition: border-color .15s ease, background .15s ease;
 
-  &:focus {
-    border-color: #3a6ff8;
-    background: #f6f8ff;
-  }
-  &:disabled {
-    opacity: .6;
-    cursor: not-allowed;
-  }
-}
-
-.app-textarea__label {
-  display: inline-block;
-  margin-bottom: .35rem;
-  color: #333;
-  font-weight: 500;
-}
-
-.app-textarea__counter {
-  margin-top: .25rem;
-  text-align: right;
-  font-size: .85rem;
-  color: #888;
-}
 </style>

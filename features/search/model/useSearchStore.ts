@@ -29,7 +29,7 @@ export const useSearchStore = defineStore('search', {
       if (import.meta.client) {
         sessionStorage.setItem('selectedBook', JSON.stringify(b));
       }
-      navigateTo(`/books/${b.id}`);
+      navigateTo(`/book/${b.id}`);
     },
 
     async searchBooks(value: string) {

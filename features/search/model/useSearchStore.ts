@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { useBooksApi } from '@/features/books/services/books.api';
-import { toBookSummary } from '@/features/books/adapters/book.adapter';
 import type { BookSummary } from '~/domain/book';
+import { toBookSummary } from '~/features/books/adapters/book.adapter';
 
 export const useSearchStore = defineStore('search', {
   state: () => ({
@@ -26,7 +26,7 @@ export const useSearchStore = defineStore('search', {
 
     selectBook(b: BookSummary) {
       this.selectedBook = b;
-      if (process.client) {
+      if (import.meta.client) {
         sessionStorage.setItem('selectedBook', JSON.stringify(b));
       }
       navigateTo(`/books/${b.id}`);

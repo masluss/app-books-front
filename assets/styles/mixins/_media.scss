@@ -1,0 +1,8 @@
+$bp: (
+  sm: 480px,
+  md: 768px,
+  lg: 1024px
+);
+@mixin up($key) {
+  @media (min-width: map-get($bp, $key)) { @content; }
+}

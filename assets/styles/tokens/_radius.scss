@@ -1,0 +1,9 @@
+$radius-2: 8px;
+$radius-3: 12px;
+$radius-4: 16px;
+
+:root {
+  --r-2: #{$radius-2};
+  --r-3: #{$radius-3};
+  --r-4: #{$radius-4};
+}

@@ -1,0 +1,29 @@
+$palette: (
+  primary: #3b82f6,
+  primary-600: #2563eb,
+  surface: #ffffff,
+  text: #111827,
+  border: #e5e7eb,
+  success: #16a34a,
+  error: #b42318,
+  warning: #f59e0b,
+  info: #2563eb
+);
+
+:root {
+  --c-primary: #3b82f6;
+  --c-primary-600: #2563eb;
+  --c-surface: #ffffff;
+  --c-text: #111827;
+  --c-border: #e5e7eb;
+  --c-success: #16a34a;
+  --c-error: #b42318;
+  --c-warning: #f59e0b;
+  --c-info: #2563eb;
+}
+
+:root[data-theme="dark"] {
+  --c-surface: #0b0b0c;
+  --c-text: #f3f4f6;
+  --c-border: #2a2a2a;
+}

@@ -1,0 +1,18 @@
+.app-button {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: .6rem 1rem;
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-3);
+  background: var(--c-surface);
+  color: var(--c-text);
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease;
+
+  &:hover:not(:disabled) {
+    background: color-mix(in oklab, var(--c-surface), var(--c-primary) 6%);
+    border-color: color-mix(in oklab, var(--c-border), var(--c-primary) 30%);
+  }
+  &:disabled { opacity: .6; cursor: not-allowed; }
+
+  &__text { font-weight: var(--fw-medium); line-height: 1; }
+}

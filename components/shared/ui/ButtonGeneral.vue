@@ -41,29 +41,24 @@ const label = computed(() => (props.loading ? props.loadingText || props.text : 
 
 <style scoped lang="scss">
 .app-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.6rem 1rem;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  background: #fff;
-  color: #111;
-  cursor: pointer;
-  transition:
-    background 0.15s ease,
-    border-color 0.15s ease;
-  &:hover:not(:disabled) {
-    background: #f6f8ff;
-    border-color: #cfd7ff;
-  }
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
+  &.is-loading {
+    opacity: .8;
+    cursor: progress;
+
+    .app-button__spinner {
+      width: 1rem;
+      height: 1rem;
+      margin-right: .5rem;
+      border: 2px solid var(--c-border);
+      border-top-color: var(--c-primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
   }
 }
-.app-button__text {
-  font-weight: 500;
-  line-height: 1;
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 </style>

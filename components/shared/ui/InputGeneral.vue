@@ -69,31 +69,30 @@ function onInput(e: Event) {
 </script>
 
 <style scoped lang="scss">
+
+.app-input__wrapper {
+  display: grid;
+  gap: .35rem;
+}
+
 .app-input {
-  width: 100%;
-  padding: 0.6rem 1rem;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  outline: none;
-  transition:
-    border-color 0.15s ease,
-    background 0.15s ease;
+  &.is-full { width: 100%; }
 
-  &:focus {
-    border-color: #3a6ff8;
-    background: #f6f8ff;
-  }
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
+  &.is-invalid {
+    border-color: color-mix(in oklab, var(--c-border), red 60%);
+    background: color-mix(in oklab, var(--c-surface), red 6%);
   }
 }
 
-.app-input__label {
-  display: inline-block;
-  margin-bottom: 0.35rem;
-  color: #333;
-  font-weight: 500;
+.app-input__help {
+  font-size: .875rem;
+  color: color-mix(in oklab, var(--c-text), black 35%);
+  margin: 0;
+}
+
+.app-input__error {
+  font-size: .875rem;
+  margin: 0;
+  color: #b42318; 
 }
 </style>

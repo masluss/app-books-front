@@ -31,7 +31,7 @@
           :imgStyle="{ objectFit: 'cover', height: '280px', width: '100%' }"
         />
         <h3>{{ b.title }}</h3>
-        <p v-if="b.author">{{ b.author }}</p>
+        <p v-if="b.author_name">{{ b.author_name }}</p>
         <NuxtLink :to="`/book/${b.id}`" @click.prevent="goDetail(b)">Ver detalle</NuxtLink>
       </li>
     </ul>
@@ -56,7 +56,8 @@ const onSubmit = async () => {
 
 const goDetail = (book: BookSummary) => {
   store.setSelected(book);
-  if (process.client) {
+
+  if (import.meta.client) {
     sessionStorage.setItem('selectedBook', JSON.stringify(book));
   }
 };

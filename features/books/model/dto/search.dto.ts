@@ -15,7 +15,7 @@ export interface BookDocDto {
   cover_edition_key?: string;
   cover_i?: number;                    
   first_publish_year?: number;         
-  openLibraryKeyNormalized?: string;   
+  openLibraryKey?: string;   
   coverUrl?: string;                   
   inMyLibrary?: boolean;
 }

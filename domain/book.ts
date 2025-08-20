@@ -1,23 +1,31 @@
 export interface BookSummary {
   id: string;
-  openlibraryKey: string;
+  openLibraryKey: string;
   title: string;
-  author?: string;
-  year?: number;
+  author_key?: string[];
+  author_name?: string[];
+  firstPublishYear?: number;
+  coverId?: number;
   coverUrl?: string;
-  coverId?: string;
   inMyLibrary?: boolean;
 }
 
 export interface LibraryBook {
-  id: string;
+  id: string; 
   openLibraryKey: string;
   title: string;
-  author?: string;
-  year?: number;
-  coverBase64: string;   
-  review: string;        
-  rating: number;        
+  author_key?: string[];
+  author_name?: string[];
+  coverId?: number; 
+  coverUrl?: string; 
+  firstPublishYear?: number | null;
+  rating: number; 
+  review: string;
   createdAt?: string;
   updatedAt?: string;
+}
+
+export interface UpdateBookPayload {
+  review?: string;
+  rating?: number;
 }

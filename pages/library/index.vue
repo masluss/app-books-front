@@ -72,27 +72,27 @@
         <p class="modal__subtitle">{{ editing.title }}</p>
 
         <div class="form">
-          <label for="rating">Calificación (Entre 1 y 5)</label>
-          <input
-            id="rating"
-            type="number"
-            min="0"
-            max="5"
-            step="1"
+          <InputGeneral
+            id="ratingBookEdit"
             v-model.number="form.rating"
-            class="app-input"
+            type="number"
+            :min="1"
+            :max="5"
+            :step="1"
+            inputClass="input--rating"
+            aria-label="Calificación (1 a 5)"
           />
-
-          <label for="review">Review</label>
-          <textarea
-            id="review"
-            v-model="form.review"
-            rows="5"
-            class="app-textarea"
-            placeholder="Escribe tu opinión…"
+          <TextAreaGeneral
+            id="review-update"
+            v-model.trim="form.review"
+            :maxlength="500"
+            :rows="6"
+            label="Escribe tu reseña (máximo 500)"
+            placeholder="Edita tu reseña..."
+            textareaClass="textarea--review"
+            counterClass="counter--muted"
           />
         </div>
-
         <div class="modal__actions">
           <ButtonGeneral
             id="btn-cancel-edit"
@@ -127,6 +127,7 @@ import ButtonGeneral from '@/components/shared/ui/ButtonGeneral.vue';
 import InputGeneral from '@/components/shared/ui/InputGeneral.vue';
 import ImgGeneral from '@/components/shared/ui/ImgGeneral.vue';
 import type { LibraryBook } from '~/domain/book';
+import TextAreaGeneral from '~/components/shared/ui/TextAreaGeneral.vue';
 
 const store = useLibraryStore();
 const search = ref('');
@@ -163,15 +164,13 @@ onMounted(() => {
 });
 
 const editing = ref<LibraryBook | null>(null);
-const form = ref<{ rating: number; review: string }>({ rating: 0, review: '' });
+const form = reactive<{ rating: number; review: string }>({ rating: 0, review: '' });
 const saving = ref(false);
 
 function openEdit(book: LibraryBook) {
   editing.value = book;
-  form.value = {
-    rating: book.rating ?? 0,
-    review: book.review ?? '',
-  };
+  form.rating = book.rating ?? 0;
+  form.review = book.review ?? '';
 }
 
 function closeEdit() {
@@ -183,8 +182,8 @@ async function saveEdit() {
   if (!editing.value) return;
   saving.value = true;
   const ok = await store.updateBook(editing.value.id, {
-    rating: form.value.rating,
-    review: form.value.review,
+    rating: form.rating,
+    review: form.review,
   });
   saving.value = false;
   if (ok) closeEdit();
@@ -257,6 +256,9 @@ async function confirmDelete(book: LibraryBook) {
 .card__media {
   aspect-ratio: 3 / 4;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .cover {
   width: 100%;
@@ -264,7 +266,7 @@ async function confirmDelete(book: LibraryBook) {
   object-fit: cover;
 }
 .card__body {
-  padding: 0.75rem 0.9rem;
+  padding: 0.75rem;
   display: grid;
   gap: 0.35rem;
 }
@@ -281,7 +283,7 @@ async function confirmDelete(book: LibraryBook) {
 .card__actions {
   display: flex;
   gap: 0.5rem;
-  padding: 0.75rem 0.9rem;
+  padding: 0.5rem 0.75rem;
   border-top: 1px solid #f0f0f0;
   justify-content: flex-end;
   flex-wrap: wrap;

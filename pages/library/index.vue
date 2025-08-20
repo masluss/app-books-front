@@ -215,7 +215,7 @@ async function saveEdit() {
 
     if (ok) {
       toast('¡Cambios guardados!', 'success');
-      closeEdit();
+      setTimeout(() => closeEdit(), 300); 
     } else {
       toast(store.error || 'No se pudieron guardar los cambios.', 'error');
     }

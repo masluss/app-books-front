@@ -1,35 +1,37 @@
 <template>
   <Transition name="toast-fade">
-    <div
-      v-if="modelValue && message"
-      class="popup"
-      :class="`popup--${type}`"
-      role="alert"
-      aria-live="assertive"
-    >
-      <span class="popup__msg">{{ message }}</span>
-      <button
-        v-if="closable"
-        class="popup__close"
-        aria-label="Cerrar notificación"
-        @click="close"
-      >×</button>
+    <div v-if="modelValue && message">
+      <div class="popup-backdrop"></div>
+      <div class="popup" :class="`popup--${type}`" role="alert" aria-live="assertive">
+        <span class="popup__msg">{{ message }}</span>
+        <button
+          v-if="closable"
+          class="popup__close"
+          aria-label="Cerrar notificación"
+          @click="close"
+        >
+          ×
+        </button>
+      </div>
     </div>
   </Transition>
 </template>
 
 <script setup lang="ts">
-const props = withDefaults(defineProps<{
-  modelValue: boolean;
-  message: string;
-  type?: 'success' | 'error' | 'info' | 'warning';
-  duration?: number;
-  closable?: boolean;
-}>(), {
-  type: 'info',
-  duration: 3000,
-  closable: true
-});
+const props = withDefaults(
+  defineProps<{
+    modelValue: boolean;
+    message: string;
+    type?: 'success' | 'error' | 'info' | 'warning';
+    duration?: number;
+    closable?: boolean;
+  }>(),
+  {
+    type: 'info',
+    duration: 3000,
+    closable: true,
+  },
+);
 
 const emit = defineEmits<{
   (e: 'update:modelValue', v: boolean): void;
@@ -45,7 +47,10 @@ function startTimer() {
   }
 }
 function clearTimer() {
-  if (timer) { clearTimeout(timer); timer = null; }
+  if (timer) {
+    clearTimeout(timer);
+    timer = null;
+  }
 }
 function close() {
   clearTimer();
@@ -53,13 +58,16 @@ function close() {
   emit('closed');
 }
 
-watch(() => props.modelValue, (v) => {
-  if (v) startTimer(); else clearTimer();
-}, { immediate: true });
+watch(
+  () => props.modelValue,
+  (v) => {
+    if (v) startTimer();
+    else clearTimer();
+  },
+  { immediate: true },
+);
 
 onBeforeUnmount(clearTimer);
 </script>
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

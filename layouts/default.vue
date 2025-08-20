@@ -29,16 +29,21 @@
 import ButtonGeneral from '~/components/shared/ui/ButtonGeneral.vue';
 
 const goLibrary = () => {
-  navigateTo('/my-library');
+  navigateTo('/library');
 };
 </script>
 
 <style scoped lang="scss">
 .app-header {
+position: sticky; 
+  top: 0;
+  z-index: 50;
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 1rem 2rem;
+  gap: 12px;
+  padding: 10px 16px;
+  background: #ffffffcc; 
+  backdrop-filter: blur(6px);
   border-bottom: 1px solid #eee;
 }
 .brand {

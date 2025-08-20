@@ -3,11 +3,13 @@
     :id="id"
     :type="type"
     class="app-button"
-    :class="buttonClass"
-    :disabled="disabled"
+    :class="[{ 'is-loading': loading }, buttonClass]"
+    :disabled="disabled || loading"
+    :aria-busy="loading || undefined"
     @click="emit('emitButton', id)"
   >
-    <span class="app-button__text" :class="textClass">{{ text }}</span>
+    <span v-if="loading" class="app-button__spinner" aria-hidden="true" />
+    <span class="app-button__text" :class="textClass">{{ label }}</span>
   </button>
 </template>
 
@@ -16,6 +18,8 @@ const props = withDefaults(
   defineProps<{
     id: string;
     text?: string;
+    loadingText?: string;
+    loading?: boolean;
     type?: 'button' | 'submit' | 'reset';
     disabled?: boolean;
     buttonClass?: string;
@@ -23,12 +27,16 @@ const props = withDefaults(
   }>(),
   {
     text: 'Continuar',
+    loadingText: 'Procesando…',
+    loading: false,
     type: 'button',
     disabled: false,
   },
 );
-const { id } = toRefs(props);
+
 const emit = defineEmits<{ (e: 'emitButton', id: string): void }>();
+
+const label = computed(() => (props.loading ? props.loadingText || props.text : props.text));
 </script>
 
 <style scoped lang="scss">
